@@ -16,6 +16,7 @@ const Main = () => {
       <div className="flex items-center justify-center h-screen">
         <div className="bg-teal-400 text-black font-bold rounded-lg border shadow-lg p-4">
           <input
+            id="input-field"
             value={value}
             onChange={onChange}
             className="mr-2"
