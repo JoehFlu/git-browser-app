@@ -1,19 +1,47 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Switch, Route, useParams } from 'react-router-dom'
+import axios from 'axios'
 import Head from './head'
+import Header from './header'
 import Main from './main'
-import DummyView from './dummy-view'
-// import wave from '../assets/images/wave.jpg'
+import Repos from './repos'
+import Readme from './readme'
+
 
 const Home = () => {
-  const { user } = useParams()
+  const { user, repository } = useParams()
+  const url = `https://api.github.com/users/${user}/repos`
+  const urlReadme = `https://api.github.com/repos/${user}/${repository}/readme`
+  const [repos, setRepos] = useState([])
+
+  useEffect(() => {
+    if (typeof user !== 'undefined') {
+      axios.get(url).then((it) => {
+        setRepos(it.data.map((repo) => ({ name: repo.name, id: repo.id })))
+      })
+    }
+  }, [url, user])
+
+  const [readme, setReadme] = useState()
+
+  useEffect(() => {
+    if (typeof user !== 'undefined' && typeof repository !== 'undefined') {
+      axios.get(urlReadme).then(({ data }) => {
+        axios(data.download_url).then(({ data: text }) => {
+          setReadme(text)
+        })
+      })
+    }
+  }, [urlReadme, user, repository])
+
   return (
     <div>
       <Head title="Home" />
-      <div> Hello World from Home, {user}</div>
+      <Header />
       <Switch>
         <Route exact path="/" component={() => <Main />} />
-        <Route exact path="/:user" component={() => <DummyView />} />
+        <Route exact path="/:user" component={() => <Repos repos={repos} />} />
+        <Route exact path="/:user/:repository" component={() => <Readme readme={readme} />} />
       </Switch>
     </div>
   )
