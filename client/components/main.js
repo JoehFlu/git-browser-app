@@ -28,6 +28,7 @@ const Main = () => {
             }}
           />
           <button
+            id="search-button"
             onClick={onClick}
             className="bg-blue-400 hover:text-black text-white font-bold rounded-lg shadow-lg p-2"
             type="button"
